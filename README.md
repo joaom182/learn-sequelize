@@ -8,7 +8,7 @@ yarn add sequelize-cli -D
 # Configuring
 
 Create a database configuration file on `config/database.js`
-```
+```typescript
 const dbOptions = {
   dialect: 'postgres',
   host: 'localhost',
@@ -25,7 +25,7 @@ module.exports = dbOptions;
 ```
 
 Implement DB connection on `database/index.ts`
-```
+```typescript
 import { Sequelize } from 'sequelize';
 import dbConfig from '~configs/database';
 
@@ -35,7 +35,7 @@ export default connection;
 ```
 
 Create .sequelizerc to set config file
-```
+```typescript
 const path = require('path');
 
 module.exports = {
@@ -51,11 +51,11 @@ yarn sequelize db:create
 # Migrations
 
 Add migrations path on .sequelizerc
-```
+```typescript
 const path = require('path');
 
 module.exports = {
-  ...,
+  ...otherConfigs,
   'migrations-path': path.resolve(__dirname, 'src', 'database', 'migrations')
 };
 ```
