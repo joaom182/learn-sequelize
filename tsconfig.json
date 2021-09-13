@@ -20,8 +20,9 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "~src/*": ["./src/*"],
-      "~configs/*": ["./src/configs/*"]
+      "~configs/*": ["./src/configs/*"],
+      "~database/*": ["./src/database/*"],
+      "~models/*": ["./src/models/*"]
     }
   },
   "include": ["src/**/*"]
