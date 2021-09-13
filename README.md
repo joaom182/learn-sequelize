@@ -77,7 +77,43 @@ yarn sequelize db:migrate:undo
 
 # Integration tests (TODO)
 
-> Help links
+## Tips
+
+Execute migrations on your `jest-environment-node` file using `execSync` lib.
+```typescript
+const { execSync } = require('child_process');
+const sequelizeCli = './node_modules/.bin/sequelize';
+
+execSync(`${sequelizeCli} db:migrate`);
+```
+
+You can load your test environment variables on jest-environment-file using the lib `dotenv`
+```typescript
+require('dotenv').config({
+  path: '.env.test',
+});
+```
+
+You can overwrite environment variables this way:
+```typescript
+this.global.process.env.DB_NAME = process.env.DB_NAME = 'NEW_VALUE';
+```
+
+Connect on database before to execute your tests
+```typescript
+import { Options } from 'sequelize/types';
+import dbOptions from '~configs/database';
+import { connect } from '~database/connection';
+
+describe('...', () => {
+  beforeAll(async () => {
+    await connect(dbOptions as Options);
+  });
+  // ...
+})
+```
+
+> Helpful links
 - https://jestjs.io/pt-BR/docs/configuration#testenvironment-string
 - https://github.com/rocketseat-content/youtube-node-testes/blob/master/prisma/prisma-environment-jest.js
 - https://www.youtube.com/watch?v=18Dgf7lb9QA

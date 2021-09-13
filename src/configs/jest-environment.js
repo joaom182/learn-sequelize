@@ -4,7 +4,6 @@ require('dotenv').config({
 const NodeEnvironment = require('jest-environment-node');
 const { v4: uuid } = require('uuid');
 const { execSync } = require('child_process');
-const { connect } = require('../database/connection');
 
 const sequelizeCli = './node_modules/.bin/sequelize';
 
@@ -12,7 +11,6 @@ class CustomEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);
     this.schema = `db_test_${uuid()}`;
-    this.connection = null;
   }
 
   async setup() {
