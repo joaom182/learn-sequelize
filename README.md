@@ -5,16 +5,20 @@ yarn add pg pg-hstore sequelize
 yarn add sequelize-cli -D
 ```
 
+
 # Configuring
 
 Create a database configuration file on `config/database.js`
+
 ```typescript
 const dbOptions = {
-  dialect: 'postgres',
-  host: 'localhost',
-  username: 'docker',
-  password: 'docker',
-  database: 'sqlnode',
+  dialect: process.env.DB_DIALECT,
+  storage: process.env.DB_STORAGE,
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  ...(process.env.DB_LOGS_ENABLED === 'false' && { logging: () => {} }),
   define: {
     timestamps: true, // created_at, updated_at
     underscored: true, // conver tableName to table_name
@@ -22,16 +26,59 @@ const dbOptions = {
 };
 
 module.exports = dbOptions;
+
+```
+
+Create .env files
+
+>.env
+```
+DB_DIALECT=postgres
+DB_HOST=localhost
+DB_USER=docker
+DB_PASS=docker
+DB_NAME=sqlnode
+DB_LOGS_ENABLED=true
+```
+
+>.env.test
+```
+DB_DIALECT=sqlite
+DB_STORAGE='/var/tmp/data/test_database.sqlite'
+DB_HOST=localhost
+DB_USER=docker
+DB_PASS=docker
+DB_NAME=db_test
+DB_LOGS_ENABLED=false
 ```
 
 Implement DB connection on `database/index.ts`
 ```typescript
 import { Sequelize } from 'sequelize';
-import dbConfig from '~configs/database';
+import { Options } from 'sequelize/types';
+import User from '../models/User';
+import Question from '../models/Question';
 
-const connection = new Sequelize(dbConfig);
+const connections: {
+  [key: string]: Sequelize;
+} = {};
 
-export default connection;
+function setupModels(connection: Sequelize) {
+  User.setup(connection);
+  Question.setup(connection);
+  // other models...
+}
+
+export async function connect(options: Options): Promise<Sequelize> {
+  const key = options.database as string;
+
+  if (connections[key]) return connections[key];
+
+  const connection = new Sequelize(options);
+  connections[key] = connection;
+  setupModels(connection);
+  return connections[key];
+}
 ```
 
 Create .sequelizerc to set config file
@@ -75,7 +122,7 @@ Undo your last migration
 yarn sequelize db:migrate:undo
 ```
 
-# Integration tests (TODO)
+# Integration tests
 
 ## Tips
 
