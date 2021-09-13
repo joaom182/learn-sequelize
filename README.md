@@ -160,7 +160,8 @@ describe('...', () => {
 })
 ```
 
-> Helpful links
+# Helpful links
+
 - https://jestjs.io/pt-BR/docs/configuration#testenvironment-string
 - https://github.com/rocketseat-content/youtube-node-testes/blob/master/prisma/prisma-environment-jest.js
 - https://www.youtube.com/watch?v=18Dgf7lb9QA
